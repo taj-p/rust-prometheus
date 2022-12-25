@@ -7,6 +7,7 @@ use std::str::{self, FromStr};
 use std::time::Duration;
 
 use reqwest::blocking::Client;
+use reqwest::header::CONTENT_LENGTH;
 use reqwest::header::CONTENT_TYPE;
 use reqwest::{Method, StatusCode, Url};
 
@@ -179,13 +180,15 @@ fn push<S: BuildHasher>(
             .build()
             .unwrap();
     }
+
     let mut builder = HTTP_CLIENT
         .request(
             Method::from_str(method).unwrap(),
             Url::from_str(&push_url).unwrap(),
         )
         .header(CONTENT_TYPE, encoder.format_type())
-        .body(buf);
+        .header(CONTENT_LENGTH, buf.len())
+        .body(buf.clone());
 
     if let Some(BasicAuthentication { username, password }) = basic_auth {
         builder = builder.basic_auth(username, Some(password));
@@ -210,12 +213,14 @@ async fn push_async<S: BuildHasher>(
             .build()
             .unwrap();
     }
+
     let mut builder = ASYNC_HTTP_CLIENT
         .request(
             Method::from_str(method).unwrap(),
             Url::from_str(&push_url).unwrap(),
         )
         .header(CONTENT_TYPE, encoder.format_type())
+        .header(CONTENT_LENGTH, buf.capacity())
         .body(buf);
 
     if let Some(BasicAuthentication { username, password }) = basic_auth {
