@@ -223,7 +223,8 @@ pub use self::metrics::Opts;
 pub use self::pulling_gauge::PullingGauge;
 #[cfg(feature = "push")]
 pub use self::push::{
-    hostname_grouping_key, push_add_collector, push_add_metrics, push_collector, push_metrics,
+    hostname_grouping_key, push_add_collector, push_add_collector_async, push_add_metrics,
+    push_add_metrics_async, push_collector, push_collector_async, push_metrics, push_metrics_async,
     BasicAuthentication,
 };
 pub use self::registry::Registry;
